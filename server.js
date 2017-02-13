@@ -12,6 +12,15 @@ let server = http.createServer();
 
 server.on('request',function(req,res){
     let url = URL.parse(req.url);
+    
+    if(url.path == '/') {
+        Render.serve({
+            "path": './assets/index.html',
+            "ct":{'Content-Type':'text/html'}
+        }, res);
+        return;
+    }
+    
     let rt = Router.parse(url);
     Render.serve(rt,res);
     
