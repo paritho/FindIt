@@ -4,14 +4,16 @@ let http = require('http');
 let https = require('https');
 let Router = require('./router.js');
 let Render = require('./render.js');
+let URL = require('url');
 
 
 let server = http.createServer();
 
 
 server.on('request',function(req,res){
-    let rt = Router.parse(req.url);
-    Render.serve(rt);
+    let url = URL.parse(req.url);
+    let rt = Router.parse(url);
+    Render.serve(rt,res);
     
 });
 
