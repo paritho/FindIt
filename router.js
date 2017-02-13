@@ -1,26 +1,56 @@
 'use strict';
+var Render = require('render.js');
 
-var URL = require('url');
-var renderer = require('./render.js');
-
-
-function route(req,res){
-    var url = URL.parse(req.url);
-    
-    if(url.path.indexOf('.ico') > 0) return;
-    
-    renderer.serve(url.path,res);
+module.exports = function(){
+    return {
+        routes:[],
+        
+        add:function(path, handler){ 
+            // TODO: implement dynamic routing
+            // for customer's domains: uakron.findit.com
+        },
+        
+        parse:function(url){
+            
+            if(url.indexOf('/assets/')>-1) {
+                let fullFileName = url.match(/(\w+)(\.[a-z]+)$/);
+                let file = fullFileName ? fullFileName[1] : 'error';
+                let ext = fullFileName ? fullFileName[2] : 'html';
+                let ct;
+                
+                switch(ext){
+                    case ".css":
+                        ct = 'text/css';
+                        break;
+                    case ".html":
+                        ct = 'text/html';
+                        break;
+                    case ".js":
+                        ct = 'application/javascript';
+                        break;
+                    case ".jpeg":
+                        ct = 'image/jpeg';
+                        break;
+                    case ".ico":
+                        ct = 'image/ico';
+                        break;
+                }
+                
+                routes.push({
+                    "file":fullFileName,
+                    "ct" : ct;
+                });
+            }
+            
+            if(url.indexOf('/api/')>-1) {
+                // TODO: implement the API
+                // /api/stack/:id/:action
+            }
+            
+            return this.routes;
+        }
+        
+        
+    }
     
 }
-
-function sendError(msg,code){
-    code = code ? code : 404;
-    res.writeHead(code,{'Content-Type':'text/html'});
-    res.end(msg);
-}
-
-
-
-module.exports.route = route;
-module.exports.sendError = sendError;
-

@@ -9,7 +9,6 @@ function serve(path, res){
     var destructedURL = path.match(rgx);
     
     if(!destructedURL){
-        
         fs.readFile('404.html',function(err,data){
             if(err) {
                 res.writeHead(500, {'Content-Type':'text/html'});

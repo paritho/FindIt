@@ -1,11 +1,22 @@
 'use strict';
 
-var http = require('http');
-var https = require('https');
-var router = require('./router.js');
+let http = require('http');
+let https = require('https');
+let Router = require('./router.js');
+let Render = require('./render.js');
+
+
+let server = http.createServer();
+
+
+server.on('request',function(req,res){
+    let rt = Router.parse(req.url);
+    Render.serve(rt);
+    
+});
 
 
 
-var server = http.createServer(router.route)
-.listen(3333, function(){console.log("server listening on 3333")});
+
+server.listen(3333, function(){console.log("server listening on 3333")});
 
