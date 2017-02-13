@@ -1,0 +1,98 @@
+body {font-family: sans-serif; margin: 0;padding: 0;}
+
+a {
+    text-decoration: none;
+}
+
+form {
+    padding: 10px 0 0 0;
+}
+
+form input {
+    display: inline;
+    width: 99%;
+    font-size: 2em;
+    color: #777;
+}
+
+form label {
+    text-align: left;
+    margin: 0;
+    font-size: 2em;
+    color: gray;
+    padding: 0;
+}
+
+h1 {
+    color:darkseagreen;
+}
+
+.wrapper {
+    width: 98%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.content {
+    background: #ccc;
+}
+
+
+.btn {
+    display: block;
+    border: none;
+    border-top:3px solid gray;
+    padding: 15px;
+    font-size: 2em;
+    color: white;
+    cursor:pointer;
+}
+
+.btn:hover {
+    color:gray;
+}
+
+.form-group {
+    text-align: left;
+    margin: 25px;
+}
+
+.response {
+    padding: 15px;
+    background-color: coral;
+    color: white;
+}
+
+.hide {
+    padding: 0;
+    max-height: 0;
+    transition: max-height .7s ease, padding .7s ease;
+    overflow: hidden;
+}
+
+.show {
+    transition: max-height .7s ease, padding .7s ease;
+    max-height: 10em;
+}
+
+#sub-btn {
+    background-color: darkseagreen;
+    width: 100%;
+}
+
+#add-btn{
+    background-color: coral;
+}
+
+#update-btn {
+    background-color: palevioletred;
+}
+
+#other-btn {
+    background-color: cadetblue;
+}
+
+#home-btn {
+    background-color: dodgerblue;
+}
+
