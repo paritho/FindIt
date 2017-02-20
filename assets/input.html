@@ -10,18 +10,19 @@
  <div class="wrapper" id="container">   
     <h1>Enter Stack Information</h1>
     <div class="content">
-        <form id="addstackdata" name="addstackdata">
+        <form id="addstackdata" name="addstackdata" action="/api/stacks/" method="post">
+            <input type="hidden" id="act" value="input">
             <div class="form-group">
                 <label for="stackID">Stack Number</label>
-                <input name="stackID" placeholder="Ex: 823" type="text">
+                <input name="stackID" id="stackID" placeholder="Ex: 823" type="text">
             </div>
             <div class="form-group">
                 <label for="stCallNumber">Starting Call Number:</label>
-                <input name="stCallNumber" placeholder="Ex: PR6005 .H66 D47 1956" type="text">
+                <input name="stCallNumber" id="stCallNumber" placeholder="Ex: PR6005 .H66 D47 1956" type="text">
             </div>
             <div class="form-group">
                 <label for="endCallNumber">Ending Call Number:</label>
-                <input name="endCallNumber" placeholder="Ex: PR6023 .A93 W8 1961" type="text">
+                <input name="endCallNumber" id="endCallNumber" placeholder="Ex: PR6023 .A93 W8 1961" type="text">
             </div>
             <button class="btn" id="sub-btn" type="submit">Submit</button>
         </form>

@@ -1,11 +1,47 @@
 'use strict';
 
+let Render = require('./render.js');
+let API = require('./api.js');
+let URL = require('url');
+
+
 function add(path, handler){ 
     // TODO: implement dynamic routing
     // for customer's domains: uakron.findit.com
 }
         
-function parse(url){
+function parse(req, res){
+    let url = URL.parse(req.url);
+    
+    // home route
+    if(url.path == '/') {
+        Render.serve({
+            "path": './assets/index.html',
+            "ct":{'Content-Type':'text/html'}
+        }, res);
+        return;
+    }
+    
+    // api route
+    if(url.path.indexOf('/api/')>-1) {
+        // /api/stack/:id/:action
+        console.log('api request');
+        
+        if(req.method === 'POST'){
+            let body = '';
+            req.on('data',function(data){
+                body += data;
+                // kill if too much data
+                if(body.length > 1e6) req.connection.destroy();
+            });
+            req.on('end',function(){
+                Render.serve(API.go(body),res);
+            });
+        }
+        return;
+    }
+    
+    // assets route
     let match = url.path.match(/(\w+)(\.[a-z]+)$/);
 
     if(match) {
@@ -35,18 +71,13 @@ function parse(url){
         
         path += match['input'];
            
-        return {
+        Render.serve({
             "path": path,
             "ct" : ct
-        }
+        }, res);
     }
-            
-    if(url.path.indexOf('/api/')>-1) {
-        // TODO: implement the API
-        // /api/stack/:id/:action
-        console.log('api request');
-        return {};
-    }
+    
+    // error route
             
 }
     

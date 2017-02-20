@@ -8,7 +8,7 @@ let wr_options = {
     mode:'0666',
     autoClose: true    
 };
-let wr = fs.createWriteStream('stackdata.json', wr_options);
+let wr = fs.createWriteStream('./database/stackdata.json', wr_options);
 
 function write(data){
     const buff = Buffer.from(data);

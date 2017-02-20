@@ -57,6 +57,11 @@ h1 {
     margin: 25px;
 }
 
+.invalid {
+    box-shadow: 0 0 5px 2px #E91E63;
+    color: #E91E63;
+}
+
 .response {
     padding: 15px;
     background-color: coral;
