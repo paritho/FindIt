@@ -23,9 +23,6 @@ function postRoute(data){
         case 'input':
             response = AddNewStack(data);
             break;
-        case 'update':
-            response = UpdateExistingStack(data);
-            break;
         default:
             response = 'No action taken';
             break;

@@ -49,17 +49,12 @@ h1 {
 }
 
 .btn:hover {
-    color:gray;
+    color:black;
 }
 
 .form-group {
     text-align: left;
     margin: 25px;
-}
-
-.invalid {
-    box-shadow: 0 0 5px 2px #E91E63;
-    color: #E91E63;
 }
 
 .response {
@@ -80,9 +75,21 @@ h1 {
     max-height: 10em;
 }
 
-#sub-btn {
+.sub-btn {
     background-color: darkseagreen;
     width: 100%;
+}
+
+.invalid {
+    box-shadow: 0 0 5px 2px #E91E63;
+    color: #E91E63;
+}
+
+.danger {
+    background-color: orangered;
+}
+.danger:hover{
+    color:white;
 }
 
 #add-btn{
