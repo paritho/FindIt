@@ -70,6 +70,12 @@ h1 {
     overflow: hidden;
 }
 
+.readonly {
+    border: none;
+    background: #777;
+    color: white;
+}
+
 .show {
     transition: max-height .7s ease, padding .7s ease;
     max-height: 10em;
@@ -96,12 +102,16 @@ h1 {
     background-color: coral;
 }
 
+#cancel-btn {
+    background-color: firebrick;
+}
+
 #update-btn {
     background-color: palevioletred;
 }
 
-#other-btn {
-    background-color: cadetblue;
+#another-btn {
+    background-color: sandybrown;
 }
 
 #home-btn {

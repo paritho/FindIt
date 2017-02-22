@@ -10,7 +10,7 @@
  <div class="wrapper" id="container">   
     <h1>Enter Stack Information</h1>
     <div class="content">
-        <form id="addstackdata" name="addstackdata" action="/api/stacks/" method="post">
+        <form id="inputStack" name="inputStack" action="/api/stacks/" method="post">
             <input type="hidden" id="act" value="input">
             <div class="form-group">
                 <label for="stackID">Stack Number</label>
@@ -24,7 +24,7 @@
                 <label for="endCallNumber">Ending Call Number:</label>
                 <input name="endCallNumber" id="endCallNumber" placeholder="Ex: PR6023 .A93 W8 1961" type="text">
             </div>
-            <button class="btn sub-btn" id="sub-btn" type="submit">Submit</button>
+            <button class="btn sub-btn" id="input-btn" type="submit">Submit</button>
         </form>
         <a class="btn" id="home-btn" href="/">Home</a>
     </div>
@@ -32,6 +32,7 @@
     <div id="response" class="response hide"></div>
     
 </div> 
-<script src="client.js"></script>
+<script src="global.js"></script>
+<script src="poststack.js"></script>
 </body>
 </html>
