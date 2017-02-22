@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Stack Data Collector for UA</title>
+    <link rel="stylesheet" href="styles.css" type="text/css">
+
+</head>
+<body>
+ <div class="wrapper" id="container">   
+    <h1>Update Stack Information</h1>
+    <div class="content">
+        <form id="updatestackdata" name="updatestackdata" action="/api/stacks/" method="get">
+            <!--<input type="hidden" id="act" value="update">
+            <div class="form-group">
+                <label for="stackID">Stack Number</label>
+                <input name="stackID" id="stackID" placeholder="Ex: 823" type="text">
+            </div>-->
+            <h2>Here's the info we found</h2>
+            <div id="stack-info" class="">
+                <div class="form-group">
+                    <label for="stackID">Stack Id:</label>
+                    <input class="readonly" name="sID" id="sID" value="710" type="text" readonly="true">
+                </div>
+                <div class="form-group">
+                    <label for="stcn">Starts with call number:</label>
+                    <input class="readonly" name="stcn" id="stcn" value="PR6005 .A56" type="text" readonly="true">
+                </div>
+                <div class="form-group">
+                    <label for="edcn">Ends with call number:</label>
+                    <input class="readonly" name="edcn" id="edcn" value="PS106 .Z56" type="text" readonly="true" readonly="true">
+                </div>
+                
+            </div>
+            
+            <a class="btn" id="update-btn">Update this stack information</a>
+            <a class="btn" id="another-btn">Looks good, check another stack</a>
+            
+            
+            <button class="btn sub-btn" id="sub-btn" type="submit">Submit</button>
+            <a class="btn hide" id="cancel-btn">Cancel</a>
+        </form>
+        
+        
+        
+        
+    </div>
+    
+    <a class="btn" id="home-btn" href="/">Home</a>
+    <div id="response" class="response hide"></div>
+    
+</div> 
+<script src="global.js"></script>
+<script src="getstack.js"></script>
+</body>
+</html>
