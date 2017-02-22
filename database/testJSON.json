@@ -1,0 +1,27 @@
+{
+    "stacks" : [
+        {
+            "id" :123,
+            "callNumbers" : {
+                "start" : {
+                    "full":"PR6005 .H6 D68 1956",
+                    "letters":["p","r"],
+                    "rank":6005,
+                    "decimal":".h6",
+                    "position": "d68",
+                    "year": 1956
+                },
+                "end" : {
+                    "full":"PS309 .F7 K57",
+                    "letters":["p","s"],
+                    "rank":309,
+                    "decimal":".f7",
+                    "position": "k57",
+                    "year": undefined
+                }
+            },
+            "floor": "3rd",
+            "location":""       // Ciriculum Center, Music, etc
+        }   
+    ]
+}

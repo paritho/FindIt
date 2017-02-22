@@ -22,7 +22,7 @@ function parse(req, res){
         return;
     }
     
-    // api route
+    // POST api route
     if(url.path.indexOf('/api/')>-1) {
         // /api/stack/:id/:action
         console.log('api request');
@@ -35,14 +35,24 @@ function parse(req, res){
                 if(body.length > 1e6) req.connection.destroy();
             });
             req.on('end',function(){
-                Render.serve(API.go(body),res);
+                Render.serve(API.postRoute(body),res);
             });
         }
+        
+        
+        // GET api route
+        if(req.method === 'GET'){
+            // TODO: implement getting stack information
+            // /api/stack/:id
+        }
+        
+        
+        
         return;
     }
     
     // assets route
-    let match = url.path.match(/(\w+)(\.[a-z]+)$/);
+    let match = url.path.match(/(\w+)(\.\w+)$/);
 
     if(match) {
         let ext = match[2],

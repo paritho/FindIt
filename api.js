@@ -1,5 +1,7 @@
 'use strict';
 let fs = require('fs');
+let Sanitize = require('./sanitize.js');
+let ProcessData = require('./process.js');
 
 let rs_options = {};
 
@@ -7,10 +9,14 @@ let rs = fs.createReadStream('./database/stackdata.json',rs_options);
 
 
 // /api/stack/:id/:action
-function go(data){
-    data = JSON.parse(data);
-    console.log(data);
+function postRoute(data){
     
+    data = JSON.parse(data);
+    
+    for(let prop in data){
+        data[prop] = Sanitize.strip(data[prop]);
+    }
+        
     let action = data.act;
     let response = '';
     switch(action){
@@ -20,8 +26,6 @@ function go(data){
         case 'update':
             response = UpdateExistingStack(data);
             break;
-        case '':
-            break;
         default:
             response = 'No action taken';
             break;
@@ -29,24 +33,32 @@ function go(data){
     return response;
 }
 
+function getRoute(request){
+    
+}
+
+
 function AddNewStack(data){
     let ws_options = {flags:'a'};
     let ws = fs.createWriteStream('./database/stackdata.json',ws_options);
     
-    let obj_to_write = {
-        "stackID":data.stackID,
-        "stCallNumber":data.stCallNumber,
-        "endCallNumber":data.endCallNumber
-        
-    };
-
+    if(data.stackID == '' || data.stCallNumber == '' || data.endCallNumber == ''){
+        return {
+            "status": 418,
+            "id":'Incomplete information'
+        };
+    }
+    
+    let obj_to_write = ProcessData.json(data);
+    
     const buff = Buffer.from(JSON.stringify(obj_to_write));
     console.log('writing to file');
     ws.write(buff);
     console.log('file written');
-    
+  
     let result = {
-        "path": './assets/success.html',
+        "status":200,
+        "id": data.stackID
     };
     
     return result;
@@ -57,7 +69,12 @@ function UpdateExistingStack(data){
     return '';
 }
 
+function GetStackData(id){
+    
+}
 
 
 
-module.exports.go = go;
+
+module.exports.postRoute = postRoute;
+module.exports.getRoute = getRoute;

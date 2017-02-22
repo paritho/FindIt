@@ -7,6 +7,14 @@ let files = {};
 
 function serve(file, res){
     
+    // if file is JSON obj, it won't have a path property
+    if(!file.hasOwnProperty('path')){
+        res.writeHead(200, {'Content-type':'application/json'});
+        res.end(JSON.stringify(file));
+        return;        
+    }
+    
+    // if file is a string
     if(!files[file.path]){
         
         fs.readFile(file.path, function(err,data){
