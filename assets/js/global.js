@@ -26,3 +26,28 @@ function showInvalid(el){
 function toggleHide(){
     for(let arg of arguments) arg.classList.toggle('hide');
 }
+
+function success(){
+    var msgHost = document.getElementById('response');
+    let response = JSON.parse(this.responseText);
+    
+    switch(response.status){
+        case 200:
+            msgHost.innerHTML = `${response.msg} Stack #${response.id} inserted`;
+            break;
+        case 400:
+            msgHost.innerHTML = `${response.msg}`;
+            break;
+        case 404:
+            msgHost.innerHTML = `${response.msg}`;
+            break;
+        case 418:
+            msgHost.innerHTML = `${response.msg}`;
+            break;
+    }
+    
+    msgHost.classList = 'response show';
+    setTimeout(function(){
+        msgHost.classList = "response hide";
+    }, 3000);
+}

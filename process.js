@@ -5,14 +5,14 @@ function json(data){
         edcn = parseCallNumber(data.endCallNumber),
         floor = getFloor(stcn.letters[0]);
         
-    return {
-        "id":data.stackID,
+    return JSON.stringify({
+        "id":parseInt(data.stackID),
         "callNumbers":{
             "start": stcn,
             "end": edcn
         },
         "floor": floor
-    };
+    });
 }
 
 function parseCallNumber(callnum){

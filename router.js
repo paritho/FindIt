@@ -42,8 +42,9 @@ function parse(req, res){
         
         // GET api route
         if(req.method === 'GET'){
-            // TODO: implement getting stack information
             // /api/stack/:id
+            if(url.path.indexOf('/api/'>-1)) 
+                Render.serve(API.getRoute(url), res);
         }
         
         

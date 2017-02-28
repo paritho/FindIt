@@ -26,21 +26,6 @@ btn.addEventListener('click',function(e){
     
 });
 
-function success(){
-    var msgHost = document.getElementById('response');
-    let response = JSON.parse(this.responseText);
-    
-    if(response.status === 200)
-        msgHost.innerHTML = `Success! Stack #${response.id} inserted`;
-    
-    if(response.status === 418)
-        msgHost.innerHTML = `You didn't provide information, or something went wrong`;
-    
-    msgHost.classList = 'response show';
-    setTimeout(function(){
-        msgHost.classList = "response hide";
-    }, 3000);
-}
 
 
 
