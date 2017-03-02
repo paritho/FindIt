@@ -1,54 +1,67 @@
 'use strict';
 
-let update_btn = document.getElementById('update-btn'),
-    another_btn = document.getElementById('another-btn'),
-    cancel_btn = document.getElementById('cancel-btn'),
-    sub_btn = document.getElementById('sub-btn'),
-    inputs = document.querySelectorAll('input');
-    
-
 let xhr = new XMLHttpRequest();
 
-if(update_btn){
-    update_btn.addEventListener('click', function(){
-        inputs.forEach(function(input){
-            if(input.getAttribute('id') == "sID") return;
-            input.removeAttribute("readonly");
-            input.classList = "";
-        });
+document.addEventListener('click',function(e){
+    let update_btn = document.getElementById('update-btn'),
+        another_btn = document.getElementById('another-btn'),
+        cancel_btn = document.getElementById('cancel-btn');
 
-        toggleHide(this, another_btn, cancel_btn);    
-    });
-}
-
-if(cancel_btn){
-    cancel_btn.addEventListener('click', function(){
-        inputs.forEach(function(input){
-            input.setAttribute('readonly', true);
-            input.classList = 'readonly';
-        });
-
-        toggleHide(this, another_btn, update_btn); 
-
-    });
-}
-
-sub_btn.addEventListener('click', function(e){
-    e.preventDefault();
-    let id = document.getElementById('stackID').value,
-        form = document.getElementById('updatestackdata');
+    // there was a previous error showing, remove it    
+    if(e.target.type == 'text') removeValidationError();
     
+     switch(e.target.id){
+        case "update-btn":
+            updateBtnHandler();
+            e.stopPropagation();
+            toggleHide(update_btn,another_btn,cancel_btn);
+            break;
+        case "cancel-btn":
+            cancelBtnHandler();
+            e.stopPropagation();
+            toggleHide(update_btn,another_btn,cancel_btn);
+            break;
+        case "sub-btn":
+            submitBtnHandler(e);
+            break;
+    }
+});
+
+function updateBtnHandler(){
+    let inputs = document.querySelectorAll('input');
+    inputs.forEach(function(input){
+        if(input.getAttribute('id') == "stackID" || input.getAttribute('id')=="vis-Id") return;
+        input.removeAttribute("readonly");
+        input.classList = "";
+     });
+    
+}
+
+function cancelBtnHandler(){
+    let inputs = document.querySelectorAll('input');
+    inputs.forEach(function(input){
+        input.setAttribute('readonly', true);
+        input.classList = 'readonly';
+    });
+}
+
+function submitBtnHandler(e){
+    e.preventDefault();
+    let stIdInput = document.getElementById('stackID'),
+        id = stIdInput.value,
+        form = document.getElementById('updatestackdata');
+
+    if(!validate(processForm(form))){
+        showInvalid(e.target);
+        return;
+    }
+
     let url = `${form.action}${id}`;
     
     xhr.onload = success;
     
     xhr.open(form.method,url,true);
     xhr.send();
-    
-});
-
-function replaceForm(){
-    // put form for updating the found stack 
-
 }
+
 

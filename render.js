@@ -9,7 +9,7 @@ function serve(file, res){
     
     // if file is JSON obj, it won't have a path property
     if(!file.hasOwnProperty('path')){
-        res.writeHead(200, {'Content-type':'application/json'});
+        res.writeHead(file.status, {'Content-type':'application/json'});
         res.end(JSON.stringify(file));
         return;        
     }

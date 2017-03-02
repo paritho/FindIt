@@ -8,8 +8,7 @@ form {
     padding: 10px 0 0 0;
 }
 
-form input {
-    display: inline;
+form input, .form-input {
     width: 99%;
     font-size: 2em;
     color: #777;

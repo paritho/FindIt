@@ -2,7 +2,7 @@
 let fs = require('fs');
 let Sanitize = require('./sanitize.js');
 let ProcessData = require('./process.js');
-
+let FormFactory = require('./formFactory.js');
 let db_path = './database/stackdata.json';
 
 
@@ -36,17 +36,27 @@ function getRoute(url){
     let id = url.match(id_rgx);
     
     if(!id) return {
-        "status":418,
+        "status":400,
         "id":null,
         "msg":"Invalid stack ID provided"
     };
 
-    GetStackData(id);
+    // id is at position 0 in url array
+    let data = GetStackData(id.pop());
+
+    // if obj.status, we didn't find a match
+    if(data.status) return data;
+
+    // otherwise, go find the new form, add data to 
+    // it and return the file.
+    let form = FormFactory.genUpdateForm(data);
+    
     return {
-        'status':404,
-        'id':id,
-        'msg':'nothing to report'
-    };
+        "status": 201,
+        "id": data.id,
+        "msg": form
+    }
+ 
 }
 
 
@@ -54,7 +64,7 @@ function AddNewStack(data){
     let ws_options = {flags:'a'};
     let ws = fs.createWriteStream(db_path,ws_options);
         
-    if(data.stackID == '' || data.stCallNumber == '' || data.endCallNumber == ''){
+    if(data.stackID == '' || data.startCallNumber == '' || data.endCallNumber == ''){
         return {
             "status": 400,
             "id": null,
@@ -63,7 +73,7 @@ function AddNewStack(data){
     }
     
     // need ',' prior to new obj
-    let dataToWrite = "," + ProcessData.json(data);
+    let dataToWrite = ","+ProcessData.json(data)+"]}";
     
     // remove trailing ']}' from file
     fs.stat(db_path, (err,stats)=>{
@@ -77,15 +87,16 @@ function AddNewStack(data){
         if(err) console.log('there was an error');
     });
     // replace trailing ']}'
-    ws.end(']}',console.log('file written'));
+    ws.end(console.log('file written'));
     
-    let result = {
+    return {
         "status":200,
         "id": data.stackID,
         "msg": "Success!"
     };
-    
-    return result;
+
+    // TODO: implement sorting algorithm
+
 }
 
 function UpdateExistingStack(data){
@@ -94,7 +105,21 @@ function UpdateExistingStack(data){
 }
 
 function GetStackData(id){
- 
+        
+    let data = fs.readFileSync(db_path, 'utf8');
+    data = JSON.parse(data);
+    let stacks = data.stacks;
+
+    for(let stack of stacks){
+        if(stack.id == id) return stack;
+    }
+
+    return {
+        "status":404,
+        "id":id,
+        "msg": "no such stack found"
+    };
+
 }
 
 

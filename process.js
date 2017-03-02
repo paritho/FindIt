@@ -1,7 +1,7 @@
 'use strict';
 
 function json(data){
-    let stcn = parseCallNumber(data.stCallNumber),
+    let stcn = parseCallNumber(data.startCallNumber),
         edcn = parseCallNumber(data.endCallNumber),
         floor = getFloor(stcn.letters[0]);
         

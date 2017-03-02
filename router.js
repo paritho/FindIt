@@ -25,7 +25,7 @@ function parse(req, res){
     // POST api route
     if(url.path.indexOf('/api/')>-1) {
         // /api/stack/:id/:action
-        console.log('api request');
+        console.log('api request in', req.method);
         
         if(req.method === 'POST'){
             let body = '';
@@ -43,8 +43,10 @@ function parse(req, res){
         // GET api route
         if(req.method === 'GET'){
             // /api/stack/:id
-            if(url.path.indexOf('/api/'>-1)) 
+            if(url.path.indexOf('/stacks/'>-1)) {
                 Render.serve(API.getRoute(url), res);
+            }
+            
         }
         
         
