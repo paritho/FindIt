@@ -80,12 +80,9 @@ function AddNewStack(data){
     let dataToWrite = ","+ProcessData.json(data)+"]}";
     
     // remove trailing ']}' from file
-    fs.stat(db_path, (err,stats)=>{
-        if(err) throw err;
-        fs.truncateSync(db_path, stats.size - 2, (err)=> {if(err) throw err});
-    });
+    let stats = fs.statSync(db_path);
+    fs.truncateSync(db_path, stats.size - 2, (err)=> {if(err) throw err});
 
-    //const buff = Buffer.from(dataToWrite);
     console.log('writing to file');
     ws.write(dataToWrite, (err)=> {
         if(err) console.log('there was an error');
@@ -111,6 +108,7 @@ function UpdateExistingStack(data){
 function GetStackData(id){
         
     let data = fs.readFileSync(db_path, 'utf8');
+    // TODO: better error handling if json is malformed
     data = JSON.parse(data);
     let stacks = data.stacks;
 
