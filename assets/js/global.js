@@ -1,3 +1,77 @@
+'use strict';
+
+let xhr = new XMLHttpRequest();
+
+document.addEventListener('click',function(e){
+    let update_btn = document.getElementById('update-btn'),
+        another_btn = document.getElementById('another-btn'),
+        cancel_btn = document.getElementById('cancel-btn');
+
+    // there was a previous error showing, remove it    
+    if(e.target.type == 'text') removeValidationError();
+    
+     switch(e.target.id){
+        case "update-btn":
+            updateBtnHandler();
+            e.stopPropagation();
+            toggleHide(update_btn,another_btn,cancel_btn);
+            break;
+        case "cancel-btn":
+            cancelBtnHandler();
+            e.stopPropagation();
+            toggleHide(update_btn,another_btn,cancel_btn);
+            break;
+        case "sub-btn":
+            submitBtnHandler(e);
+            break;
+    }
+});
+
+function updateBtnHandler(){
+    let inputs = document.querySelectorAll('input');
+    inputs.forEach(function(input){
+        if(input.getAttribute('id') == "stackID" || input.getAttribute('id')=="vis-Id") return;
+        input.removeAttribute("readonly");
+        input.classList = "";
+     });
+    
+}
+
+function cancelBtnHandler(){
+    let inputs = document.querySelectorAll('input');
+    inputs.forEach(function(input){
+        input.setAttribute('readonly', true);
+        input.classList = 'readonly';
+    });
+}
+
+function submitBtnHandler(e){
+    e.preventDefault();
+    let stIdInput = document.getElementById('stackID'),
+        id = stIdInput.value,
+        form = document.querySelector('form');
+
+    let formData = processForm(form);
+    if(!validate(formData)){
+        showInvalid(e.target);
+        return;
+    }
+
+    let url = `${form.action}${id}`;
+    
+    xhr.onload = success;
+
+    if(form.method === 'post'){
+        url += `/${formData["act"]}`;
+        xhr.open(form.method,url,true);
+        xhr.send(JSON.stringify(formData));
+        return;
+    }
+
+    xhr.open(form.method,url,true);
+    xhr.send();
+}
+
 function processForm(form){
     let inputs = form.querySelectorAll('input');
     let result = {};
@@ -11,7 +85,8 @@ function validate(data){
 
     let callNumRgx = /(\w{2})(\d+)\s(\.\w{1}\d+)/gi,
         idRgx = /^[0-9]{3}$/g,
-        valid = false;
+        // so that this works on forms where we aren't checking the id
+        valid = true;
     
     if(!data.startCallNumber || !data.endCallNumber) {
         valid = data.stackID && data.stackID.match(idRgx);
@@ -56,6 +131,9 @@ function success(){
         case 201:
             msgHost.innerHTML = `Info for Stack ${response.id} found`;
             formWrapper.innerHTML = response.msg;
+            break;
+        case 300:
+            msgHost.innerHTML = `${response.msg}`;
             break;
         case 400:
             msgHost.innerHTML = `${response.msg}`;

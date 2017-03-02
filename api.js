@@ -23,7 +23,11 @@ function postRoute(data){
             response = AddNewStack(data);
             break;
         default:
-            response = 'No action taken';
+            response = {
+                "status":300,
+                "id":null,
+                "msg":"No action taken"
+            }
             break;
     }
     return response;
