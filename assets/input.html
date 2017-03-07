@@ -9,29 +9,26 @@
 <body>
  <div class="wrapper" id="container">   
     <h1>Enter Stack Information</h1>
-    <div class="content">
-        <form id="inputStack" name="inputStack" action="/api/stacks/" method="post">
+    <div class="content" id="form-content">
+        <form id="stackdata" name="stackdata" action="/api/stacks/" method="get">
             <input type="hidden" id="act" value="input">
             <div class="form-group">
                 <label for="stackID">Stack Number</label>
                 <input name="stackID" id="stackID" placeholder="Ex: 823" type="text">
+            </div>   
+            <div class="hide" id="stack-details">
+            
             </div>
-            <div class="form-group">
-                <label for="startCallNumber">Starting Call Number:</label>
-                <input name="startCallNumber" id="startCallNumber" placeholder="Ex: PR6005 .H66 D47 1956" type="text">
-            </div>
-            <div class="form-group">
-                <label for="endCallNumber">Ending Call Number:</label>
-                <input name="endCallNumber" id="endCallNumber" placeholder="Ex: PR6023 .A93 W8 1961" type="text">
-            </div>
-            <button class="btn sub-btn" id="sub-btn" type="submit">Submit</button>
+
+        <button class="btn sub-btn" id="sub-btn" type="submit">Submit</button>
         </form>
-        <a class="btn" id="home-btn" href="/">Home</a>
     </div>
     
+    <a class="btn" id="home-btn" href="/">Home</a>
     <div id="response" class="response hide"></div>
     
 </div> 
 <script src="global.js"></script>
+<script src="chkup.js"></script>
 </body>
 </html>

@@ -19,18 +19,24 @@ function postRoute(data){
     let action = data.act;
     let response = '';
     switch(action){
+         case 'update':
+            return {
+                "status":300,
+                "id":null,
+                "msg":"No action taken"
+            }
+            break;
         case 'input':
-            response = AddNewStack(data);
+            return AddNewStack(data);
             break;
         default:
-            response = {
+            return {
                 "status":300,
                 "id":null,
                 "msg":"No action taken"
             }
             break;
     }
-    return response;
 }
 
 function getRoute(url){
@@ -45,18 +51,23 @@ function getRoute(url){
         "msg":"Invalid stack ID provided"
     };
 
-    // id is at position 0 in url array
+    // id is at position 0 in array
     let data = GetStackData(id.pop());
+    
+    let form, 
+        options = {'action':'update'};
 
     // if obj.status, we didn't find a match
-    if(data.status) return data;
+    // so we return a blank form. This form needs
+    // the options of post and input
+    if(data.status) options.action = 'input';
 
     // otherwise, go find the new form, add data to 
     // it and return the file.
-    let form = FormFactory.genUpdateForm(data);
+    form = FormFactory.genUpdateForm(data,options);
     
     return {
-        "status": 201,
+        "status": data.status || 201,
         "id": data.id,
         "msg": form
     }
@@ -96,7 +107,7 @@ function AddNewStack(data){
         "msg": "Success!"
     };
 
-    // TODO: implement sorting algorithm
+    // TODO: implement sorting and duplicates algorithm
 
 }
 
@@ -119,7 +130,7 @@ function GetStackData(id){
     return {
         "status":404,
         "id":id,
-        "msg": "no such stack found"
+        "msg": "No such stack found"
     };
 
 }

@@ -63,9 +63,10 @@ h1 {
 }
 
 .hide {
+    border: none;
     padding: 0;
     max-height: 0;
-    transition: max-height .7s ease, padding .7s ease;
+    transition: max-height .7s ease, padding .7s ease, border .7s ease;
     overflow: hidden;
 }
 
