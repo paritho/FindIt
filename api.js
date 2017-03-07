@@ -12,19 +12,12 @@ function postRoute(data){
     
     data = JSON.parse(data);
     
-    for(let prop in data){
-        data[prop] = Sanitize.strip(data[prop]);
-    }
+    for(let prop in data) data[prop] = Sanitize.strip(data[prop]);
         
-    let action = data.act;
     let response = '';
-    switch(action){
+    switch(data.act){
          case 'update':
-            return {
-                "status":300,
-                "id":null,
-                "msg":"No action taken"
-            }
+            return UpdateExistingStack(data);
             break;
         case 'input':
             return AddNewStack(data);
@@ -88,7 +81,7 @@ function AddNewStack(data){
     }
     
     // need ',' prior to new obj
-    let dataToWrite = ","+ProcessData.json(data)+"]}";
+    let dataToWrite = ","+JSON.stringify(ProcessData.json(data))+"]}";
     
     // remove trailing ']}' from file
     let stats = fs.statSync(db_path);
@@ -112,8 +105,35 @@ function AddNewStack(data){
 }
 
 function UpdateExistingStack(data){
+    let dataToUpdate = ProcessData.json(data);
+    let db = fs.readFileSync(db_path,'utf8');
+        
+    db = JSON.parse(db);
     
-    return '';
+    let len = db.stacks.length;
+    for(let i=0;i<len;++i){
+        if(db.stacks[i].id == dataToUpdate.id){
+            console.log('found stack: ', db.stacks[i].id);
+            db.stacks[i] = dataToUpdate;
+            break;
+        }
+    }
+
+    let ws = fs.createWriteStream(db_path);
+    ws.write(JSON.stringify(db),(err)=>{
+        if(err) throw err;
+    });
+    ws.end(console.log('file updated'));
+            
+    return {
+        "status":202,
+        "id":dataToUpdate.id,
+        "msg":`Data for stack ${dataToUpdate.id} updated`
+    }
+
+    // update that obj with new info from data.callnumbers
+    // write file to disc
+
 }
 
 function GetStackData(id){

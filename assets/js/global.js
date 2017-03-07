@@ -36,7 +36,6 @@ function updateBtnHandler(){
 function submitBtnHandler(e){
     e.preventDefault();
     let stIdInput = document.getElementById('stackID'),
-        id = stIdInput.value,
         form = document.querySelector('form');
 
     let formData = processForm(form);
@@ -45,10 +44,9 @@ function submitBtnHandler(e){
         return;
     }
 
-    let url = `${form.action}${id}`;
+    let url = `${form.action}${stIdInput.value}`;
     
     xhr.onload = success;
-
     if(form.method === 'post'){
         url += `/${formData["act"]}`;
         xhr.open(form.method,url,true);
@@ -127,6 +125,9 @@ function success(){
         case 201:
             msgHost.innerHTML = `Info for Stack ${response.id} found`;
             formWrapper.innerHTML = response.msg;
+            break;
+        case 202:
+            msgHost.innerHTML = `Stack ${response.id} successfully updated`;
             break;
         case 300:
             msgHost.innerHTML = `${response.msg}`;
