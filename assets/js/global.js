@@ -39,10 +39,10 @@ function submitBtnHandler(e){
         form = document.querySelector('form');
 
     let formData = processForm(form);
-    if(!validate(formData)){
+    /*if(!validate(formData)){
         showInvalid(e.target);
         return;
-    }
+    }*/
 
     let url = `${form.action}${stIdInput.value}`;
     
@@ -76,17 +76,18 @@ function validate(data){
     // TODO: update rgx to allow for cn like pr6003.3 a899
     let callNumRgx = /(\w{2})(\d+)\s(\.\w{1}\d+)/gi,
         idRgx = /^[0-9]{3}$/g,
-        // so that this works on forms where we aren't checking the id
-        valid = true;
-    
-    if(!data.startCallNumber || !data.endCallNumber) {
-        valid = data.stackID && data.stackID.match(idRgx);
-        return valid;
+        valid = false;
+
+    let inputs = document.querySelectorAll('input');
+    for(let input of inputs){
+        if(input.id === 'act') continue;
+        if(input.value === "") return false;
+        if(input.id === 'stackID') {
+            valid = idRgx.test(input.value);
+            continue;
+        }
+        valid = callNumRgx.test(input.value);
     }
-
-    valid = valid && (data.startCallNumber && data.startCallNumber.match(callNumRgx));
-    valid = valid && (data.endCallNumber && data.endCallNumber.match(callNumRgx));
-
     return valid;
 }
 

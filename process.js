@@ -1,6 +1,9 @@
 'use strict';
+let Sanitize = require('./sanitize.js');
 
 function json(data){
+    for(let prop in data) data[prop] = Sanitize.strip(data[prop]);
+
     let stcn = parseCallNumber(data.startCallNumber),
         edcn = parseCallNumber(data.endCallNumber),
         floor = getFloor(stcn.letters[0]);

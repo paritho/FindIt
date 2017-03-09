@@ -46,9 +46,7 @@ function parse(req, res){
             if(url.path.indexOf('/stacks/'>-1)) {
                 Render.serve(API.getRoute(url), res);
             }
-            
         }
-
         return;
     }
     
