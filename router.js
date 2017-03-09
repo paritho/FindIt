@@ -44,7 +44,7 @@ function parse(req, res){
         if(req.method === 'GET'){
             // /api/stack/:id
             if(url.path.indexOf('/stacks/'>-1)) {
-                Render.serve(API.getRoute(url), res);
+                Render.serve(API.getRoute(url.path), res);
             }
         }
         return;

@@ -1,7 +1,6 @@
 'use strict';
 let fs = require('fs');
-let Sanitize = require('./sanitize');
-let ProcessData = require('./process.js');
+let DataProcessor = require('./process.js');
 let FormFactory = require('./formFactory.js');
 let db_path = './database/stackdata.json';
 
@@ -11,9 +10,10 @@ let db = require('./database/db.js');
 function postRoute(data){
     
     data = JSON.parse(data);
-    let action = Sanitize.strip(data.act);
+    let action = DataProcessor.strip(data.act);
     
-    data = ProcessData.json(data);
+    // ProcessData also sanitizes it
+    data = DataProcessor.json(data);
         
     let response = '';
     switch(action){
@@ -34,9 +34,9 @@ function postRoute(data){
 }
 
 function getRoute(url){
-    let id_rgx = /([0-9]+)/g;
-    url = Sanitize.strip(url.path);
-    let id = url.match(id_rgx)[0];
+    let id_rgx = /([0-9]+)$/igm;
+    url = DataProcessor.strip(url);
+    let id = url.match(id_rgx);
     
     if(!id) return {
         "status":400,
@@ -44,7 +44,7 @@ function getRoute(url){
         "msg":"Invalid stack ID provided"
     };
 
-    let data = db.lookup(id),
+    let data = db.lookup(id[0]),
         form, 
         options = {'action':'update'};
 

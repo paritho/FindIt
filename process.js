@@ -1,8 +1,7 @@
 'use strict';
-let Sanitize = require('./sanitize.js');
 
 function json(data){
-    for(let prop in data) data[prop] = Sanitize.strip(data[prop]);
+    for(let prop in data) data[prop] = strip(data[prop]);
 
     let stcn = parseCallNumber(data.startCallNumber),
         edcn = parseCallNumber(data.endCallNumber),
@@ -42,7 +41,10 @@ function getFloor(char){
     return char.match(/[a-h]/i) ? "2nd Floor" : "3rd Floor";
 }
 
+function strip(data){
+    // clear malictous char from data
+    return data.replace(/[`~!@#$%^&*()_|+\-=?;:'",<>\{\}\[\]\\\/]/gi,'');
+}
 
-
-
+module.exports.strip = strip;
 module.exports.json = json;
