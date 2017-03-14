@@ -50,7 +50,10 @@ function submitBtnHandler(e){
     }*/
 
     let url = `${form.action}${stIdInput.value}`;
-    
+    xhr.onprogress = function(){
+          let wrapper = document.getElementById('form-content');
+          wrapper.innerHTML = "<div class='progress'><div>Loading...</div></div>"
+    };
     xhr.onload = success;
     if(form.method === 'post'){
         url += `/${formData["act"]}`;

@@ -3,6 +3,7 @@
 let Render = require('./render.js');
 let API = require('./api.js');
 let URL = require('url');
+let logger = require('./logger.js');
 
 
 function add(path, handler){ 
@@ -43,6 +44,10 @@ function parse(req, res){
         // GET api route
         if(req.method === 'GET'){
             // /api/stack/:id
+            if(url.path.indexOf('/all/')>-1){
+
+            }
+
             if(url.path.indexOf('/stacks/'>-1)) {
                 Render.serve(API.getRoute(url.path), res);
             }
