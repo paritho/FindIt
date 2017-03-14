@@ -94,16 +94,17 @@ h1 {
 .danger {
     background-color: orangered;
 }
+
 .danger:hover{
     color:white;
 }
 
-#add-btn{
-    background-color: coral;
+.warning {
+    background-color: firebrick;
 }
 
-#cancel-btn {
-    background-color: firebrick;
+#add-btn{
+    background-color: coral;
 }
 
 #update-btn {

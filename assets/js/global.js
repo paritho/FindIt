@@ -12,13 +12,18 @@ document.addEventListener('click',function(e){
     
      switch(e.target.id){
         case "update-btn":
+            let del_btn = document.getElementById('del-btn');
             updateBtnHandler();
             e.stopPropagation();
-            toggleHide(update_btn,another_btn,cancel_btn);
+            toggleHide(update_btn,another_btn,cancel_btn,del_btn);
             break;
         case "sub-btn":
             submitBtnHandler(e);
             break;
+        case 'del-btn':
+            deleteBtnHandler();
+            break;
+
     }
 });
 
@@ -56,6 +61,18 @@ function submitBtnHandler(e){
 
     xhr.open(form.method,url,true);
     xhr.send();
+}
+
+function deleteBtnHandler(){
+    let id = document.getElementById('stackID').value;
+    let confirm = prompt('Are you sure? Enter the stack ID to confirm delete. This cannot be undone.');
+
+    if(confirm == id){
+        let dxhr = new XMLHttpRequest();
+        dxhr.onload = success;
+        dxhr.open('delete','/api/stacks/'+id,true);
+        dxhr.send();
+    }
 }
 
 // loops over each input in form and builds an obj in the form of:
@@ -121,14 +138,11 @@ function success(){
     
     switch(response.status){
         case 200:
-            msgHost.innerHTML = `${response.msg} Stack #${response.id} inserted`;
+            msgHost.innerHTML = response.msg;
             break;
         case 201:
-            msgHost.innerHTML = `Info for Stack ${response.id} found`;
-            formWrapper.innerHTML = response.msg;
-            break;
-        case 202:
-            msgHost.innerHTML = `Stack ${response.id} successfully updated`;
+            msgHost.innerHTML = response.msg;
+            formWrapper.innerHTML = response.content;
             break;
         case 300:
             msgHost.innerHTML = `${response.msg}`;
@@ -138,7 +152,7 @@ function success(){
             break;
         case 404:
             msgHost.innerHTML = `No record of stack with id: ${response.id}`;
-            formWrapper.innerHTML = response.msg;
+            formWrapper.innerHTML = response.content;
             break;
     }
     

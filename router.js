@@ -47,6 +47,13 @@ function parse(req, res){
                 Render.serve(API.getRoute(url.path), res);
             }
         }
+
+        // DELETE api route
+        if(req.method == 'DELETE'){
+            Render.serve(API.deleteRoute(url.path),res);
+        }
+
+
         return;
     }
     

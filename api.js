@@ -18,10 +18,10 @@ function postRoute(data){
     let response = '';
     switch(action){
          case 'update':
-            return UpdateExistingStack(data);
+            return updateStack(data);
             break;
         case 'input':
-            return AddNewStack(data);
+            return insertStack(data);
             break;
         default:
             return {
@@ -44,40 +44,59 @@ function getRoute(url){
         "msg":"Invalid stack ID provided"
     };
 
-    let data = db.lookup(id[0]),
-        form, 
-        options = {'action':'update'};
+    let data = db.lookup(id[0]);
 
     // if we didn't find a match, we need a blank form next
-    if(!data) {
-        options.action = 'input';
-        data = {
-            "status":404,
-            "id":id,
-            "msg": "No such stack found"
-        }
-    }
+    if(data) return {
+        "status":201,
+        "id":data.id,
+        "content": FormFactory.generateForm({"type":"update"},data),
+        "msg":`Stack ${data.id} found`
+    };   
 
-    // otherwise, go find the new form, add data to 
-    // it and return the file.
-    form = FormFactory.genUpdateForm(data,options);
-    
     return {
-        "status": data.status || 201,
-        "id": data.id,
-        "msg": form
+        "status": 201,
+        "id": id,
+        "content": FormFactory.generateForm({"type":"input"},{"id":id}),
+        "msg": `Stack ${id} not found.`
     }
  
 }
 
+function deleteRoute(url){
+    let id_rgx = /([0-9]+)$/igm;
+    url = DataProcessor.strip(url);
+    let id = url.match(id_rgx);
+        
+    if(!id) return {
+        "status":400,
+        "id":null,
+        "msg":"Invalid stack ID provided"
+    };
 
-function AddNewStack(data){
-    if(db.insert(data))
-        return {
-            "status":200,
-            "id": data.id,
-            "msg": "Success!"
-        };
+    if(db.remove(id)) return {
+        "status": 201,
+        "id": id,
+        "content": FormFactory.generateForm({"type":"lookup"}),
+        "msg":`Stack: ${id} removed from db`
+    };
+
+    return {
+        "status":500,
+        "id": data.stackID,
+        "msg": "Couldn't remove from the DataBase. Please Try again later"
+    };
+}
+
+
+function insertStack(data){
+    
+    if(db.insert(data)) return {
+        "status":201,
+        "id": data.id,
+        "content": FormFactory.generateForm({"type":"lookup"}, data),
+        "msg": `Success! Stack #${data.id} inserted.`
+    };
     
     return {
         "status":500,
@@ -86,14 +105,27 @@ function AddNewStack(data){
     };
 }
 
-function UpdateExistingStack(data){
+function updateStack(data){
     
-
+    if(db.update(data)) return {
+        "status":201,
+        "id": data.id,
+        "content": FormFactory.generateForm({"type":"lookup"}, data),
+        "msg": `Successfully updated stack with id: ${data.id}`
+        };
+    
+    return {
+        "status":500,
+        "id": data.id,
+        "msg": "Couldn't update db"
+    };
 }
+
 
 
 
 
 module.exports.postRoute = postRoute;
 module.exports.getRoute = getRoute;
+module.exports.deleteRoute = deleteRoute;
 

@@ -97,8 +97,17 @@ function insert(data){
     if(lookup(id)) return true;
 }
 
-function updateRecord(id, data){
+function update(data){
+    if(!db[data.id]) return {
+        "status":404,
+        "id":id,
+        "msg":`Stack data for id: ${id} not found`
+    };
 
+    db[data.id] = data;
+    dirty = true;
+
+    if(db[data.id].callNumbers.start.full == data.callNumbers.start.full) return true;
 }
 
 function remove(id){
@@ -108,10 +117,10 @@ function remove(id){
     dirty = true;
 
     // tells us if remove was successful
-    if(lookup(id)) return true;
+    if(!lookup(id)) return true;
 }
 
 module.exports.lookup = lookup;
 module.exports.insert = insert;
 module.exports.remove = remove;
-module.exports.updateRecord = updateRecord;
+module.exports.update = update;
