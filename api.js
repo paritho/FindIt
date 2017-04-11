@@ -31,10 +31,14 @@ function post(data){
 
 function get(url){
     url = DataProcessor.strip(url);
-    
+    // /api/search/:terms => search all stacks by term
+    if(url.indexOf('search')>-1){
+        // parse rest of url to get terms
+        // return search(db, term)
+    }
+
     // /api/stacks/all => return all db info
     // /api/stack/:id => return 1 stack info
-    // /api/search/:terms => search all stacks by term
 
     if(url.indexOf('stack') > -1) return getStackById(url);
 
