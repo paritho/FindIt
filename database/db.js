@@ -3,7 +3,14 @@
 let fs = require('fs'),
     dbPath = './database/stackdata2.json',
     dirty = false,
-    db;
+    locked = false,
+    db = {};
+
+let lockDB = function lock(){locked = true;}
+
+let unlockDB = function unlock(){locked = false;}
+
+function isLocked(){return locked;}
 
 // load data into memory
 // changes database to be indexed by stack id for
@@ -11,7 +18,7 @@ let fs = require('fs'),
 let loadDB = function(path){
     // we don't want to write to disc while loading
     dirty = false; 
-    db = {};
+    lockDB();
 
     let data = fs.readFileSync(path, 'utf8',function(e){
         if(e) {
@@ -41,6 +48,7 @@ let loadDB = function(path){
 
         db[id] = obj;
     }
+    unlockDB();
 }
 loadDB(dbPath);
  
@@ -48,13 +56,14 @@ loadDB(dbPath);
 // from the in-memory file. If so, write the data to disc
 (function monitorDB(){
     let check = setInterval(function(){
-        if(!dirty) return;
+        if(!dirty || isLocked()) return;
         console.log('db changed, writing to disc');
         writeToDisc(db);
     },1000);
 })();
 
 function writeToDisc(database){
+
     let ws = fs.createWriteStream(dbPath);
 
     let stacks = [];
@@ -76,12 +85,21 @@ function writeToDisc(database){
 
 
 function lookup(id){
+    if(isLocked()) {
+        // db busy, wait
+    }
     return db[id];
 }
 
 function insert(data){
+    // lock other access to db
+    lockDB();
+
     let id = data.id;
-    if(lookup(id)) return false;
+    if(lookup(id)) {
+        db.unlock();
+        return false;
+    }
 
     let obj = {};
     for(let prop in data){
@@ -89,38 +107,39 @@ function insert(data){
     }
 
     db[id] = obj;
+    unlockDB();
 
     // tell monitorDB we changed something
     dirty = true; 
-
-    // tells us if insert succeeded
-    if(lookup(id)) return true;
+    return true;
 }
 
 function update(data){
-    if(!db[data.id]) return {
-        "status":404,
-        "id":id,
-        "msg":`Stack data for id: ${id} not found`
-    };
+    // if submitted data equals the existing data return
+    if(db[data.id].callNumbers.start.full == data.callNumbers.start.full) return true;
+
+    if(!lookup(data.id)) return false;
+
+    lockDB();
 
     db[data.id] = data;
+    unlockDB();
     dirty = true;
-
-    if(db[data.id].callNumbers.start.full == data.callNumbers.start.full) return true;
+    
+    return true;
 }
 
 function remove(id){
+    lockDB();
     delete db[id];
+    unlockDB();
 
-    // tell monitorDB something was changed
-    dirty = true;
-
-    // tells us if remove was successful
-    if(!lookup(id)) return true;
+    dirty = true;    
+    return lookup(id) ? false : true; 
 }
 
 module.exports.lookup = lookup;
 module.exports.insert = insert;
 module.exports.remove = remove;
 module.exports.update = update;
+module.exports.isLocked = isLocked;
