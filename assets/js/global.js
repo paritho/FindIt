@@ -2,20 +2,16 @@
 
 let xhr = new XMLHttpRequest();
 
-document.addEventListener('click',function(e){
-    let update_btn = document.getElementById('update-btn'),
-        another_btn = document.getElementById('another-btn'),
-        cancel_btn = document.getElementById('cancel-btn');
-        
+document.getElementById('container').addEventListener('click', function(e){
+    let btns = document.querySelectorAll('[id$="-btn"]');
+
     // there was a previous error showing, remove it    
     if(e.target.type == 'text') removeValidationError();
     
      switch(e.target.id){
         case "update-btn":
-            let del_btn = document.getElementById('del-btn');
             updateBtnHandler();
-            e.stopPropagation();
-            toggleHide(update_btn,another_btn,cancel_btn,del_btn);
+            toggleHide(...btns);
             break;
         case "sub-btn":
             submitBtnHandler(e);
@@ -23,9 +19,9 @@ document.addEventListener('click',function(e){
         case 'del-btn':
             deleteBtnHandler();
             break;
-
     }
 });
+
 
 // function for handling the 'update stack' btn
 function updateBtnHandler(){
@@ -50,10 +46,7 @@ function submitBtnHandler(e){
     }*/
 
     let url = `${form.action}${stIdInput.value}`;
-    xhr.onprogress = function(){
-          let wrapper = document.getElementById('form-content');
-          wrapper.innerHTML = "<div class='progress'><div>Loading...</div></div>"
-    };
+    
     xhr.onload = success;
     if(form.method === 'post'){
         url += `/${formData["act"]}`;
@@ -138,14 +131,16 @@ function success(){
     var msgHost = document.getElementById('response');
     let formWrapper = document.getElementById('form-content');
     let response = JSON.parse(this.responseText);
-    
+        
     switch(response.status){
         case 200:
+            msgHost.style.backgroundColor = "green"; 
             msgHost.innerHTML = response.msg;
             break;
         case 201:
+            msgHost.style.backgroundColor = "green";
             msgHost.innerHTML = response.msg;
-            formWrapper.innerHTML = response.content;
+            formWrapper.innerHTML = generateForm(response.content);
             break;
         case 300:
             msgHost.innerHTML = `${response.msg}`;
@@ -154,8 +149,9 @@ function success(){
             msgHost.innerHTML = `${response.msg}`;
             break;
         case 404:
+            msgHost.style.backgroundColor = "red";
             msgHost.innerHTML = `No record of stack with id: ${response.id}`;
-            formWrapper.innerHTML = response.content;
+            formWrapper.innerHTML = generateForm(response.content);
             break;
     }
     
