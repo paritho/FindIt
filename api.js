@@ -11,30 +11,53 @@ function post(data){
     // ProcessData also sanitizes it
     data = DataProcessor.json(data);
         
-    let response = '';
-    switch(action){
-         case 'update':
-            return updateStack(data);
-            break;
-        case 'input':
-            return insertStack(data);
-            break;
-        default:
-            return {
-                "status":300,
-                "id":null,
-                "msg":"No action taken"
-            }
-            break;
-    }
+    let defaults = {
+        "status":300,
+        "id":null,
+        "msg":"No action taken"
+    };
+    
+    let actions = {
+        'update':updateStack,
+        'input':insertStack
+    };
+
+    if(typeof actions[action] !== 'function') return defaults;
+
+    return actions[action](data);
+
 }
 
 function get(url){
     url = DataProcessor.strip(url);
+
     // /api/search/:terms => search all stacks by term
     if(url.indexOf('search')>-1){
-        // parse rest of url to get terms
-        // return search(db, term)
+        // parse rest of url 
+        // extract everything after the word 'call' in the url
+        // this is where the callnumber lives
+        let cn = url.slice(url.indexOf('call')+4);
+
+        // send to processor to get callnumber obj
+        let callNumber = DataProcessor.json({'startCallNumber':cn});
+        let stackNum = db.search(callNumber);
+
+        if(stackNum){
+            return  {
+                "status":200,
+                "id":stackNum,
+                "content": {"type":"result","data":stackNum},
+                "msg":`Call number ${cn} found on stack ${stackNum}`
+            };
+        }
+        
+        return  {
+            "status":404,
+            "id":null,
+            "content": {"type":"result","data":"None"},
+            "msg":`No Stack Found`
+        };
+
     }
 
     // /api/stacks/all => return all db info
