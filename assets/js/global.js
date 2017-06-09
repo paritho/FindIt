@@ -2,11 +2,29 @@
 
 let xhr = new XMLHttpRequest();
 
+// check for valid input while typing
+function validate(){
+    let inputs = document.querySelectorAll('input');
+    for(let input of inputs){
+        input.addEventListener('keyup',function(e){
+            switch(e.target.id){
+                case 'stackID':
+                    if(!validateStackID(e.target.value)) showInvalid(input);
+                    else removeValidationError(e.target);
+                    break;
+                case 'startCallNumber':
+                case 'endCallNumber':
+                    if(!validateCallNumbers(e.target.value)) showInvalid(input)
+                    else removeValidationError(e.target);
+                    break;
+            }
+        });
+    }
+}
+validate();
+
 document.getElementById('container').addEventListener('click', function(e){
     let btns = document.querySelectorAll('[id$="-btn"]');
-
-    // there was a previous error showing, remove it    
-    if(e.target.type == 'text') removeValidationError();
     
      switch(e.target.id){
         case "update-btn":
@@ -36,18 +54,14 @@ function updateBtnHandler(){
 // function for handling form submission. 
 function submitBtnHandler(e){
     e.preventDefault();
-    let stIdInput = document.getElementById('stackID'),
-        form = document.querySelector('form');
+    let form = document.querySelector('form');
 
     let formData = processForm(form);
-    /*if(!validate(formData)){
-        showInvalid(e.target);
-        return;
-    }*/
-
-    let url = `${form.action}${stIdInput.value}`;
+    let path = document.getElementById('stackID').value;
+    let url = `${form.action}${path.replace(' ','')}`;
     
     xhr.onload = success;
+
     if(form.method === 'post'){
         url += `/${formData["act"]}`;
         xhr.open(form.method,url,true);
@@ -58,9 +72,30 @@ function submitBtnHandler(e){
     xhr.open(form.method,url,true);
     xhr.send();
 }
+/*
+
+    let actions = {
+        'stackID': validateStackID,
+        'startCallNumber':validateCallNumbers,
+        'endCallNumber':validateCallNumbers,
+    };
+
+    let path;
+
+    for(let input in formData){
+        if(input == 'act') continue;
+        if(input == 'stackID') path = formData[input];
+        
+        if(!actions[input](formData[input])) {
+            showInvalid(input);
+            e.target.innerHTML = 'Invalid Input';
+            return;
+        }
+    }
+*/
 
 function deleteBtnHandler(){
-    let id = document.getElementById('stackID').value;
+    let id = document.getElementById('firstSearch').value;
     let confirm = prompt('Are you sure? Enter the stack ID to confirm delete. This cannot be undone.');
 
     if(confirm == id){
@@ -85,40 +120,25 @@ function processForm(form){
 // returns true if input is in the form of:
 // 3 digits for stack id
 // PR6005 .H4 for callnumbers.
-function validate(data){
+function validateCallNumbers(data){
     // TODO: update rgx to allow for cn like pr6003.3 a899
-    let callNumRgx = /(\w{2})(\d+)\s(\.\w{1}\d+)/gi,
-        idRgx = /^[0-9]{3}$/g,
-        valid = false;
+    return /(\w{2})(\d+)(\.\w{1}\d+)/.test(data);
+}
 
-    let inputs = document.querySelectorAll('input');
-    for(let input of inputs){
-        if(input.id === 'act') continue;
-        if(input.value === "") return false;
-        if(input.id === 'stackID') {
-            valid = idRgx.test(input.value);
-            continue;
-        }
-        valid = callNumRgx.test(input.value);
-    }
-    return valid;
+function validateStackID(stackId){
+    return /^[0-9]{3}$/.test(stackId);
 }
 
 // shows that input data is not valid. @param el is a btn to change
 function showInvalid(el){
-    el.classList.add("danger");
-    el.innerHTML = "Your input isn't valid";
+    el.classList.add("invalid");
+    document.getElementById('sub-btn').disabled = true;
 }
 
 // removes validation error on input click
-function removeValidationError(){
-    // error will always be showing on the sub-btn element
-    let btn = document.getElementById('sub-btn');
-
-    if(!btn.classList.contains('danger')) return;
-
-    btn.classList.remove('danger');
-    btn.innerHTML = "Submit";
+function removeValidationError(el){
+    el.classList.remove('invalid');
+    document.getElementById('sub-btn').disabled = false;
 }
 
 // arguments should be html elements which need to be toggled
@@ -141,6 +161,7 @@ function success(){
             msgHost.style.backgroundColor = "green";
             msgHost.innerHTML = response.msg;
             formWrapper.innerHTML = generateForm(response.content);
+            validate();
             break;
         case 300:
             msgHost.innerHTML = `${response.msg}`;
@@ -148,10 +169,17 @@ function success(){
         case 400:
             msgHost.innerHTML = `${response.msg}`;
             break;
+        case 403:
+            msgHost.style.backgroundColor = "red";
+            msgHost.innerHTML = `Invalid Call Number`;
+            formWrapper.innerHTML = generateForm(response.content);
+            validate();
+            break;
         case 404:
             msgHost.style.backgroundColor = "red";
             msgHost.innerHTML = `No record of stack with id: ${response.id}`;
             formWrapper.innerHTML = generateForm(response.content);
+            validate();
             break;
     }
     

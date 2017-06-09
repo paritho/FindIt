@@ -1,10 +1,12 @@
 'use strict';
 
+let SearchDb = require('../search.js');
 let fs = require('fs'),
     dbPath = './database/stackdata2.json',
     dirty = false,
     locked = false,
-    db = {};
+    db = {},
+    searchableDB;
 
 let lockDB = function lock(){locked = true;}
 
@@ -49,6 +51,12 @@ let loadDB = function(path){
         db[id] = obj;
     }
     unlockDB();
+
+    // loadDB is called at program start, and when data is written to disc
+    // so when we reach this point we need to instantiate a new copy of
+    // the searchable db
+    searchableDB = SearchDb.buildSearchableDB(db);
+    //console.log(searchableDB);
 }
 loadDB(dbPath);
  
@@ -70,7 +78,7 @@ function writeToDisc(database){
     for(let item in database) stacks.push(database[item]);
     
     let str = '{"stacks":' + JSON.stringify(stacks) + "}";
-    console.log(str);
+    //console.log(str);
 
     ws.write(str,function(err){
         if(err) throw err;
@@ -93,13 +101,9 @@ function lookup(id){
 
 function insert(data){
     // lock other access to db
-    lockDB();
 
     let id = data.id;
-    if(lookup(id)) {
-        db.unlock();
-        return false;
-    }
+    if(lookup(id)) return false;
 
     let obj = {};
     for(let prop in data){
@@ -107,7 +111,6 @@ function insert(data){
     }
 
     db[id] = obj;
-    unlockDB();
 
     // tell monitorDB we changed something
     dirty = true; 
@@ -115,31 +118,54 @@ function insert(data){
 }
 
 function update(data){
-    // if submitted data equals the existing data return
-    if(db[data.id].callNumbers.start.full == data.callNumbers.start.full) return true;
-
     if(!lookup(data.id)) return false;
-
-    lockDB();
-
+    
     db[data.id] = data;
-    unlockDB();
+
     dirty = true;
     
     return true;
 }
 
 function remove(id){
-    lockDB();
     delete db[id];
-    unlockDB();
 
     dirty = true;    
     return lookup(id) ? false : true; 
 }
+
+
+// Search the db by call number and return the stack id
+function search(number){
+    // number => {}
+    // when processing the call number we only use starting call number
+    let fLetter = number.callNumbers.start.letters[0],
+        sLetter = number.callNumbers.start.letters[1],
+        rank = number.callNumbers.start.rank,
+        floor = number.callNumbers.floor,
+        id = -1;
+
+    let range = searchableDB[fLetter][sLetter];
+
+    if(!range) return id;
+    
+    // do the search. O(n) in the worst case
+    for(let num in range){
+        // we're only looking at the last call number for a stack
+        // so start at beginning, once num is less than rank we 
+        // have found it
+        if(rank < num) return range[num];
+    }
+
+    return id;
+
+}
+
+
 
 module.exports.lookup = lookup;
 module.exports.insert = insert;
 module.exports.remove = remove;
 module.exports.update = update;
 module.exports.isLocked = isLocked;
+module.exports.search = search;

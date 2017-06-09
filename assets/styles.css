@@ -88,6 +88,7 @@ h1 {
 
 .invalid {
     box-shadow: 0 0 5px 2px #E91E63;
+    outline:none;
     color: #E91E63;
 }
 
@@ -107,16 +108,20 @@ h1 {
     background-color: coral;
 }
 
-#update-btn {
-    background-color: palevioletred;
-}
-
 #another-btn {
     background-color: sandybrown;
 }
 
-#home-btn {
+#home-button {
     background-color: dodgerblue;
+}
+
+#search-btn {
+    background-color: darkseagreen;
+}
+
+#update-btn {
+    background-color: palevioletred;
 }
 
 /**

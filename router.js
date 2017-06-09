@@ -22,12 +22,13 @@ function parse(req, res){
         }, res);
         return;
     }
-    
-    // POST api route
+
+    // api route
     if(url.path.indexOf('/api/')>-1) {
         // /api/stack/:id/:action
         console.log('api request in', req.method);
-        
+
+        //POST route 
         if(req.method === 'POST'){
             let body = '';
             req.on('data',function(data){
@@ -36,26 +37,18 @@ function parse(req, res){
                 if(body.length > 1e6) req.connection.destroy();
             });
             req.on('end',function(){
-                Render.serve(API.postRoute(body),res);
+                Render.serve(API.post(body),res);
             });
         }
         
-        
-        // GET api route
+        // GET route
         if(req.method === 'GET'){
-            // /api/stack/:id
-            if(url.path.indexOf('/all/')>-1){
-
-            }
-
-            if(url.path.indexOf('/stacks/'>-1)) {
-                Render.serve(API.getRoute(url.path), res);
-            }
+            Render.serve(API.get(url.path), res);    
         }
 
-        // DELETE api route
+        // DELETE  route
         if(req.method == 'DELETE'){
-            Render.serve(API.deleteRoute(url.path),res);
+            Render.serve(API.delete(url.path),res);
         }
 
 

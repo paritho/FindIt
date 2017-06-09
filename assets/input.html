@@ -11,20 +11,22 @@
     <h1>Enter Stack Information</h1>
     <div class="content" id="form-content">
         <form id="stackdata" name="stackdata" action="/api/stacks/" method="get">
-            <input type="hidden" id="act" value="input">
             <div class="form-group">
                 <label for="stackID">Stack Number</label>
-                <input name="stackID" id="stackID" placeholder="Ex: 823" type="text">
+                <input name="stackID" id="stackID" placeholder="Ex: 823" type="number">
             </div>   
-      
+    
         <button class="btn sub-btn" id="sub-btn" type="submit">Submit</button>
         </form>
     </div>
     
-    <a class="btn" id="home-btn" href="/">Home</a>
+    <!-- we dont want this added to the click handler, so id is dif from 
+         other btns -->
+    <a class="btn" id="home-button" href="/">Home</a>
     <div id="response" class="response hide"></div>
     
 </div> 
+<script src="formFactory.js"></script>
 <script src="global.js"></script>
 </body>
 </html>

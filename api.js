@@ -10,6 +10,13 @@ function post(data){
     
     // ProcessData also sanitizes it
     data = DataProcessor.json(data);
+    
+    if(!data) return {
+        "status":400,
+        "id":null,
+        "content": {"type":"lookup","data":"None"},
+        "msg":`Invalid call number`
+    };
         
     let defaults = {
         "status":300,
@@ -40,9 +47,17 @@ function get(url){
 
         // send to processor to get callnumber obj
         let callNumber = DataProcessor.json({'startCallNumber':cn});
+
+        if(!callNumber) return {
+            "status":404,
+            "id":null,
+            "content": {"type":"lookup","data":"None"},
+            "msg":`Invalid call number`
+        };
+
         let stackNum = db.search(callNumber);
 
-        if(stackNum){
+        if(stackNum > 0){
             return  {
                 "status":200,
                 "id":stackNum,
