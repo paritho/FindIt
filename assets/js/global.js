@@ -72,27 +72,6 @@ function submitBtnHandler(e){
     xhr.open(form.method,url,true);
     xhr.send();
 }
-/*
-
-    let actions = {
-        'stackID': validateStackID,
-        'startCallNumber':validateCallNumbers,
-        'endCallNumber':validateCallNumbers,
-    };
-
-    let path;
-
-    for(let input in formData){
-        if(input == 'act') continue;
-        if(input == 'stackID') path = formData[input];
-        
-        if(!actions[input](formData[input])) {
-            showInvalid(input);
-            e.target.innerHTML = 'Invalid Input';
-            return;
-        }
-    }
-*/
 
 function deleteBtnHandler(){
     let id = document.getElementById('firstSearch').value;
@@ -118,15 +97,16 @@ function processForm(form){
 }
 
 // returns true if input is in the form of:
-// 3 digits for stack id
 // PR6005 .H4 for callnumbers.
 function validateCallNumbers(data){
     // TODO: update rgx to allow for cn like pr6003.3 a899
     return /(\w{2})(\d+)(\.\w{1}\d+)/.test(data);
 }
 
+// returns true if input is in the form of:
+// 1-3 digits for stack id
 function validateStackID(stackId){
-    return /^[0-9]{3}$/.test(stackId);
+    return /^[0-9]{1,3}$/.test(stackId);
 }
 
 // shows that input data is not valid. @param el is a btn to change

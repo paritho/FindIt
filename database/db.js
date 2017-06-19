@@ -55,7 +55,7 @@ let loadDB = function(path){
     // loadDB is called at program start, and when data is written to disc
     // so when we reach this point we need to instantiate a new copy of
     // the searchable db
-    searchableDB = SearchDb.buildSearchableDB(db);
+    //searchableDB = SearchDb.buildSearchableDB(db);
     //console.log(searchableDB);
 }
 loadDB(dbPath);
